@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retroexample.thanasakis.ai.retrofitjsonexample.R;
 import retroexample.thanasakis.ai.retrofitjsonexample.models.GitHubResponseItem;
 
@@ -26,17 +28,18 @@ public class GitHubItemsAdapter extends RecyclerView.Adapter<GitHubItemsAdapter.
 
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-            public TextView nameText;
-            public TextView descText;
+            @BindView(R.id.git_card)
             CardView itemCard;
+            @BindView(R.id.item_name)
+            public TextView nameText;
+            @BindView(R.id.item_description)
+            public TextView descText;
+
             PostItemListener mItemListener;
 
             public ViewHolder(View itemView, PostItemListener postItemListener) {
                 super(itemView);
-                itemCard = (CardView) itemView.findViewById(R.id.git_card);
-                nameText = (TextView) itemView.findViewById(R.id.item_name);
-                descText = (TextView) itemView.findViewById(R.id.item_description);
-
+                ButterKnife.bind(this, itemView);
                 this.mItemListener = postItemListener;
                 itemView.setOnClickListener(this);
             }

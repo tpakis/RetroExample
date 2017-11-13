@@ -16,6 +16,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retroexample.thanasakis.ai.retrofitjsonexample.adapters.GitHubItemsAdapter;
 import retroexample.thanasakis.ai.retrofitjsonexample.models.GitHubResponse;
 import retroexample.thanasakis.ai.retrofitjsonexample.models.GitHubResponseItem;
@@ -26,11 +30,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
+    @BindView(R.id.git_recycler)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.search_button)
+    Button mSearchButton;
+    @BindView(R.id.search_query)
+    EditText mSearchQueryText;
+    @BindString(R.string.error_query)
+    String errorquery;
+
     public GitHubItemsAdapter mAdapter;
-    private RecyclerView mRecyclerView;
     private GitHubService mService;
-    private Button mSearchButton;
-    private EditText mSearchQueryText;
     public final static String LIST_STATE_KEY = "recycler_list_state";
     Parcelable listState;
     RecyclerView.LayoutManager layoutManager;
@@ -39,20 +49,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         mService = GitHubUtils.getGitHubService();
-        mRecyclerView = (RecyclerView) findViewById(R.id.git_recycler);
-        mSearchQueryText = (EditText) findViewById(R.id.search_query);
-        mSearchButton = (Button) findViewById(R.id.search_button);
-        mSearchButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (mSearchQueryText.getText().length() > 0) {
-                    loadAnswers();
-                } else {
-                    Toast.makeText(MainActivity.this, getText(R.string.error_query), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
         mAdapter = new GitHubItemsAdapter(this, new ArrayList<GitHubResponseItem>(0), new GitHubItemsAdapter.PostItemListener() {
 
             @Override
@@ -96,6 +94,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @OnClick(R.id.search_button)
+    public void searchButtonClick(View v) {
+        if (mSearchQueryText.getText().length() > 0) {
+            loadAnswers();
+        } else {
+            Toast.makeText(MainActivity.this, errorquery, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
